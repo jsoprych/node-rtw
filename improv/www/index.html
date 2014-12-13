@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <link rel="stylesheet" type="text/css" href="css/modal.css">
+    <script src="js/jquery.js"></script>
+  	<script src="js/util.js"></script>
+  	<script src="js/model.js"></script>	
+    <style>
+      body {
+        font-family: Tahoma, Geneva, sans-serif;
+      }
+      divv {
+        display: inline;
+      }       	
+   
+    </style>
+    
+	<script>
+  	   $( document ).ready(function() {
+        document.model = new RTWModel('squeaky');
+        var M = document.model;
+        M.init();
+        //alert('READY!'); 
+        // client-side test data for M.update function
+        setInterval(function () {M.update('IBM', 'IBM' + getRandomInt(0,100));}, 200);
+        setInterval(function () {M.update('FOO', 'F00' + getRandomInt(0,100));}, 2000);
+        setInterval(function () {M.update('BAR', 'BAR' + getRandomInt(0,1000));}, 3000);
+        setInterval(function () {M.update('POO', 'POO' + getRandomInt(0,10));}, 500);
+        
+        getGooglePrices();
+        setInterval(getGooglePrices, 5000);
+        
+        
+        function getGooglePrices(){
+            $.getJSON('https://finance.google.com/finance/info?client=ig&q=AAPL,IBM,SAP,ORCL,HPQ,INTC.VMW,GM,johnny,MSFT,X&callback=?',function(response){
+                var htmlTable = json2HtmlTable(response, 'CSSTableGenerator live');            
+                console.debug(response);            
+ 
+                if(htmlTable){
+                    var t = Date().toString() + ' (5 sec update)';            
+                    $('.stockTick').html(htmlTable).prepend(t);
+                }
+                else{
+                    console.debug('Google price update failed');                
+                }
+            });
+        } 
+             
+      });
+    </script>
+  	   
+    <script>
+    /*
+    	var clientMsgCount = 0;
+      function updateStats(memuse) {
+        document.getElementById('rss').innerHTML = memuse.rss;
+        document.getElementById('heapTotal').innerHTML = memuse.heapTotal;
+        document.getElementById('heapUsed').innerHTML = memuse.heapUsed;
+        document.getElementById('msgId').innerHTML = memuse.msgId;
+        document.getElementById('clientCount').innerHTML = memuse.clientCount;
+        document.getElementById('clientMsgCount').innerHTML = clientMsgCount++;
+      }
+    */
+    </script>
+  </head>
+  <body>
+  
+    <strong>Model Update Test</strong><br>
+    <table class='CSSTableGenerator live' style="width:50%">
+    	<tr>
+		  <th>BAR</th><th>POO</th><th>FOO</th><th>IBM</th><th>BAR</th><th>FOO</th>    	
+    	</tr>
+    	<tr>
+    	  <td><div data-rtw = 'BAR' ></div></td>
+    	  <td><div data-rtw = 'POO'></div></td>
+    	  <td><div data-rtw = 'FOO'></td>
+    	  <td><div data-rtw = 'IBM'></div></td>
+    	  <td><div data-rtw = 'BAR'></div></td>
+    	  <td><div data-rtw = 'FOO'></div></td>
+    	</tr>
+    </table>
+
+    <br />
+    
+    <div class='stockTick'></div>
+  
+  </body>
+</html>
